@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MECEE BL Model Entrance Exam - Quiz</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #7209b7;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f8961e;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fb;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: var(--box-shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem;
+            gap: 1.5rem;
+        }
+
+        .sidebar {
+            flex: 0 0 280px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .question-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .question-number {
+            background: var(--light);
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .question-number:hover {
+            background: #e9ecef;
+        }
+
+        .question-number.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .question-number.answered {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .main-content {
+            flex: 1;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .question-card {
+            margin-bottom: 2rem;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .option {
+            background: var(--light);
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .option:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .option.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .option.correct {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .option.incorrect {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger);
+        }
+
+        .solution-section {
+            background: #f8f9fa;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            display: none;
+        }
+
+        .solution-section.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .solution-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-success:hover {
+            background: #3aa8d0;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .math {
+            font-size: 1.1rem;
+        }
+
+        footer {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 992px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                position: static;
+                margin-bottom: 1.5rem;
+            }
+            
+            .question-grid {
+                grid-template-columns: repeat(8, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .question-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+            
+            .question-text {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .question-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+            
+            .navigation {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>MECEE BL Model Entrance Exam</h1>
+        <p>Model: V | Set: B | Date: Ashar 7th 2082</p>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar">
+            <h2>Question Navigation</h2>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="answered-count">0</div>
+                    <div>Answered</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="total-count">200</div>
+                    <div>Total</div>
+                </div>
+            </div>
+            <div class="question-grid" id="question-nav">
+                <!-- Question numbers will be generated by JavaScript -->
+            </div>
+            <div style="margin-top: 1.5rem;">
+                <button class="btn btn-success" id="reset-btn">
+                    <i class="fas fa-redo"></i> Reset Quiz
+                </button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="question-card">
+                <div class="question-header">
+                    <h2 id="current-question">Question 1</h2>
+                    <div id="timer">Time: <span id="time-display">00:00</span></div>
+                </div>
+                
+                <div class="question-text" id="question-text">
+                    <!-- Question text will be loaded here -->
+                </div>
+                
+                <div class="options" id="options-container">
+                    <!-- Options will be loaded here -->
+                </div>
+                
+                <div class="solution-section" id="solution-section">
+                    <div class="solution-header">
+                        <h3>Solution</h3>
+                        <button class="btn btn-outline" id="close-solution">
+                            <i class="fas fa-times"></i> Close
+                        </button>
+                    </div>
+                    <div id="solution-text">
+                        <!-- Solution text will be loaded here -->
+                    </div>
+                </div>
+                
+                <div class="navigation">
+                    <button class="btn" id="prev-btn">
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </button>
+                    <button class="btn btn-outline" id="show-solution-btn">
+                        <i class="fas fa-lightbulb"></i> Show Solution
+                    </button>
+                    <button class="btn" id="next-btn">
+                        Next <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <p>NAME Institute | In front of Singhdurbar, Putalisadak | Tel: 01-5331144</p>
+        <p>Result will be published on Sunday. Log on to www.name.edu.np or www.facebook.com/nameinstitute</p>
+    </footer>
+
+    <script>
+        // Sample data - in a real implementation, you would load all 200 questions
+        const questions = [
+            {
+                number: 1,
+                text: "The very early stage of HIV infection before antibody production is called:",
+                options: [
+                    "a) Latent period",
+                    "b) Incubation period",
+                    "c) Window period",
+                    "d) Safe period"
+                ],
+                correctAnswer: 2, // Index of correct option (0-based)
+                solution: "Window period - this is the time between original infection with HIV and the appearance of detectable antibodies to the virus, normally a period of about 14-21 days."
+            },
+            {
+                number: 2,
+                text: "Which structurally is directly affected in typhoid fever?",
+                options: [
+                    "a) Tongue",
+                    "b) Stomach",
+                    "c) Rectum",
+                    "d) Payer's patches"
+                ],
+                correctAnswer: 3,
+                solution: "This bacteremic phase of disease is characterized by widely dissemination of the organisms. The most common sites of secondary infection are liver, spleen, bone marrow, gall bladder and peyer's patches."
+            },
+            {
+                number: 3,
+                text: "Breast cancer is an example of:",
+                options: [
+                    "a) Sarcoma",
+                    "b) Adenoma",
+                    "c) Carcinoma",
+                    "d) Lymphoma"
+                ],
+                correctAnswer: 2,
+                solution: "Carcinomas usually form solid tumors. They are the most common type of cancer. Examples of carcinomas include prostate cancer, breast cancer, lung cancer, and colorectal cancer."
+            },
+            {
+                number: 4,
+                text: "Stenson's duct opens at:",
+                options: [
+                    "a) Upper first premolar",
+                    "b) Upper second premolar",
+                    "c) Upper first molar",
+                    "d) Upper second molar"
+                ],
+                correctAnswer: 3,
+                solution: "The parotid duct, also known as Stensen duct, drains saliva from the parotid gland into the oral cavity. Stensen's duct opens near the second upper molar."
+            },
+            {
+                number: 5,
+                text: "______ is located between two pleural sacs and is the central compartment of the thoracic cavity?",
+                options: [
+                    "a) Hilum",
+                    "b) Pleura",
+                    "c) Mediastinum",
+                    "d) Thoracic cage"
+                ],
+                correctAnswer: 2,
+                solution: "The mediastinum is the partition between the lungs and includes the mediastinal pleura. It is commonly applied to the internal between the two pleural sacs, the sternum and the thoracic vertebral column extending to the diaphragm."
+            },
+            {
+                number: 6,
+                text: "The total number of orifices for outgoing and incoming of urine through the bladder is",
+                options: [
+                    "a) 2",
+                    "b) 3",
+                    "c) 4",
+                    "d) 5"
+                ],
+                correctAnswer: 1,
+                solution: "The trigone (vesical trigone) is a smooth triangular region of the internal urinary bladder formed by the two ureteric orifices and the internal urethral orifice."
+            },
+            {
+                number: 7,
+                text: "Pituitary hormone triggering the male testes to generate sperm and in females, triggering follicular development on a monthly basis is",
+                options: [
+                    "a) Prolactin",
+                    "b) GH",
+                    "c) FSH",
+                    "d) LH"
+                ],
+                correctAnswer: 2,
+                solution: "FSH enters the testes, stimulating the Sertoli cells, which help to nourish the sperm cells that the testes produce, to begin facilitating spermatogenesis."
+            },
+            {
+                number: 8,
+                text: "Ventral root of spinal nerve is composed of",
+                options: [
+                    "a) Somatic motor and visceral sensory fibres",
+                    "b) Somatic sensory and visceral sensory fibres",
+                    "c) Somatic motors and visceral motor fibres",
+                    "d) Somatic sensory and visceral motor fibres"
+                ],
+                correctAnswer: 2,
+                solution: "The nerve fibres of ventral root carry motor impulses away from the spinal cord."
+            },
+            {
+                number: 9,
+                text: "Epiboly results in:",
+                options: [
+                    "a) Formation of yolk plug",
+                    "b) Formation of blastopore",
+                    "c) Movement of chorda-mesodermal cells",
+                    "d) Formation of notochord"
+                ],
+                correctAnswer: 0,
+                solution: "Macula lutea: It is the part of the retina that is responsible for sharp, detailed central vision (also called visual acuity). The macula lutea, also called fovea, contains a very high concentration of cones. These are the light-sensitive cells in the retina that give detailed central vision."
+            },
+            {
+                number: 10,
+                text: "Macula lutea is a part of",
+                options: [
+                    "a) Optic nerve",
+                    "b) Sclerotic",
+                    "c) Choroid",
+                    "d) Retina"
+                ],
+                correctAnswer: 3,
+                solution: "Macula lutea is a part of the retina responsible for central vision."
+            }
+            // In a complete implementation, all 200 questions would be here
+        ];
+
+        // Initialize quiz state
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+        let quizStarted = false;
+        let startTime = null;
+        let timerInterval = null;
+
+        // DOM Elements
+        const questionNav = document.getElementById('question-nav');
+        const currentQuestionElement = document.getElementById('current-question');
+        const questionTextElement = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const solutionSection = document.getElementById('solution-section');
+        const solutionTextElement = document.getElementById('solution-text');
+        const showSolutionBtn = document.getElementById('show-solution-btn');
+        const closeSolutionBtn = document.getElementById('close-solution-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const answeredCountElement = document.getElementById('answered-count');
+        const timeDisplay = document.getElementById('time-display');
+
+        // Initialize the quiz
+        function initQuiz() {
+            createQuestionNavigation();
+            loadQuestion(currentQuestionIndex);
+            updateStats();
+            startTimer();
+        }
+
+        // Create question navigation grid
+        function createQuestionNavigation() {
+            questionNav.innerHTML = '';
+            questions.forEach((question, index) => {
+                const questionNumber = document.createElement('div');
+                questionNumber.className = 'question-number';
+                questionNumber.textContent = index + 1;
+                questionNumber.addEventListener('click', () => {
+                    currentQuestionIndex = index;
+                    loadQuestion(currentQuestionIndex);
+                });
+                questionNav.appendChild(questionNumber);
+            });
+        }
+
+        // Load a question
+        function loadQuestion(index) {
+            const question = questions[index];
+            
+            // Update current question indicator
+            currentQuestionElement.textContent = `Question ${question.number}`;
+            
+            // Update question text
+            questionTextElement.textContent = question.text;
+            
+            // Update options
+            optionsContainer.innerHTML = '';
+            question.options.forEach((option, optionIndex) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                if (userAnswers[index] === optionIndex) {
+                    optionElement.classList.add('selected');
+                }
+                optionElement.textContent = option;
+                optionElement.addEventListener('click', () => selectOption(optionIndex));
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            // Update navigation buttons
+            prevBtn.disabled = index === 0;
+            nextBtn.disabled = index === questions.length - 1;
+            
+            // Update active question in navigation
+            document.querySelectorAll('.question-number').forEach((el, i) => {
+                el.classList.toggle('active', i === index);
+                el.classList.toggle('answered', userAnswers[i] !== null);
+            });
+            
+            // Hide solution
+            solutionSection.classList.remove('show');
+            
+            // Update stats
+            updateStats();
+        }
+
+        // Select an option
+        function selectOption(optionIndex) {
+            userAnswers[currentQuestionIndex] = optionIndex;
+            loadQuestion(currentQuestionIndex);
+        }
+
+        // Show solution
+        function showSolution() {
+            const question = questions[currentQuestionIndex];
+            solutionTextElement.textContent = question.solution;
+            solutionSection.classList.add('show');
+        }
+
+        // Hide solution
+        function hideSolution() {
+            solutionSection.classList.remove('show');
+        }
+
+        // Navigate to previous question
+        function goToPreviousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        // Navigate to next question
+        function goToNextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        // Update statistics
+        function updateStats() {
+            const answeredCount = userAnswers.filter(answer => answer !== null).length;
+            answeredCountElement.textContent = answeredCount;
+        }
+
+        // Start timer
+        function startTimer() {
+            startTime = new Date();
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        // Update timer display
+        function updateTimer() {
+            if (!startTime) return;
+            
+            const now = new Date();
+            const diff = Math.floor((now - startTime) / 1000);
+            const minutes = Math.floor(diff / 60);
+            const seconds = diff % 60;
+            
+            timeDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Reset quiz
+        function resetQuiz() {
+            if (confirm('Are you sure you want to reset the quiz? All your progress will be lost.')) {
+                userAnswers = new Array(questions.length).fill(null);
+                currentQuestionIndex = 0;
+                startTime = new Date();
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        // Event listeners
+        showSolutionBtn.addEventListener('click', showSolution);
+        closeSolutionBtn.addEventListener('click', hideSolution);
+        prevBtn.addEventListener('click', goToPreviousQuestion);
+        nextBtn.addEventListener('click', goToNextQuestion);
+        resetBtn.addEventListener('click', resetQuiz);
+
+        // Initialize the quiz when the page loads
+        document.addEventListener('DOMContentLoaded', initQuiz);
+    </script>
+</body>
+</html>

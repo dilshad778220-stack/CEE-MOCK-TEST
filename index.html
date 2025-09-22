@@ -152,37 +152,15 @@
             </div>
         </section>
 
-        <!-- PDF View (Initially Hidden) -->
-        <section id="pdf-page" class="hidden py-16 sm:py-24 h-screen transition-opacity duration-500 ease-in-out">
-            <div class="flex justify-between items-center mb-4">
-                 <button id="back-btn-pdf" class="flex items-center text-slate-600 hover:text-indigo-600 font-semibold transition-colors duration-200">
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-                     </svg>
-                     Back to Home
-                 </button>
-                 <h2 class="text-xl sm:text-2xl font-bold text-center text-slate-900 flex-grow">
-                    CEE 2082 Mock Test
-                 </h2>
-                 <div class="w-16"></div>
-            </div>
-            
-            <div class="h-[calc(100vh-8rem)] rounded-2xl overflow-hidden shadow-2xl">
-                <iframe id="pdf-viewer" src="" class="w-full h-full" frameborder="0"></iframe>
-            </div>
-        </section>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const landingPage = document.getElementById('landing-page');
             const authPage = document.getElementById('auth-page');
-            const pdfPage = document.getElementById('pdf-page');
             const getStartedBtn = document.getElementById('get-started-btn');
             const authForm = document.getElementById('auth-form');
             const backBtnAuth = document.getElementById('back-btn-auth');
-            const backBtnPdf = document.getElementById('back-btn-pdf');
-            const pdfViewer = document.getElementById('pdf-viewer');
             const messageBox = document.getElementById('message-box');
 
             // Hardcoded demo credentials
@@ -209,7 +187,6 @@
             function hideAllPages() {
                 landingPage.classList.add('hidden', 'opacity-0');
                 authPage.classList.add('hidden', 'opacity-0');
-                pdfPage.classList.add('hidden', 'opacity-0');
             }
 
             function showPage(pageElement) {
@@ -224,7 +201,6 @@
             // --- Event Listeners ---
             getStartedBtn.addEventListener('click', () => showPage(authPage));
             backBtnAuth.addEventListener('click', () => showPage(landingPage));
-            backBtnPdf.addEventListener('click', () => showPage(landingPage));
             
             authForm.addEventListener('submit', (e) => {
                 e.preventDefault();
@@ -232,11 +208,10 @@
                 const password = authForm.elements['password'].value;
 
                 if (email === DEMO_EMAIL && password === DEMO_PASSWORD) {
-                    showMessage("Login successful!", 'success');
+                    showMessage("Login successful! Redirecting...", 'success');
                     setTimeout(() => {
-                         pdfViewer.src = "mocktest.pdf";
-                         showPage(pdfPage);
-                    }, 500); 
+                         window.location.href = "mocktest.html";
+                    }, 1000); 
                 } else {
                     showMessage("Invalid email or password. Please try again.");
                 }
@@ -248,4 +223,3 @@
 </body>
 </html>
 
-  
